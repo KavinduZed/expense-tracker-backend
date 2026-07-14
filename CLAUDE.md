@@ -3,14 +3,13 @@
 ## Project Context
 This is a web port of a mobile expense tracker app (originally Kotlin/Android, MVVM 
 architecture). This repo is the ASP.NET Core Web API backend only. The React frontend 
-lives in a separate sibling repo (`expense-tracker-frontend`) and consumes this API over REST.
+lives in a separate sibling repo (`expense-tracker-web`) and consumes this API over REST.
 
 ## Stack
 - ASP.NET Core Web API (.NET 8, C#)
-- Entity Framework Core (Code First) — Npgsql provider for Postgres, or SqlServer provider 
-  if using Azure SQL (confirm which before scaffolding)
-- ASP.NET Core Identity + JWT for auth, Google OAuth via 
-  Microsoft.AspNetCore.Authentication.Google
+- Entity Framework Core (Code First) — SqlServer provider, Azure SQL (decided 2026-07-14)
+- ASP.NET Core Identity + JWT (access + refresh tokens) for auth; Google OAuth via 
+  Microsoft.AspNetCore.Authentication.Google (Phase 2)
 - Azure AI Vision for OCR (receipt scanning)
 - ML.NET for the forecasting module
 
@@ -49,13 +48,10 @@ lives in a separate sibling repo (`expense-tracker-frontend`) and consumes this 
 7. Forecasting endpoint (ML.NET)
 
 ## Testing
-- xUnit for unit tests, in a separate /Tests project
-- Test services and validators, not EF Core itself
-
-## Testing
-- Vitest + React Testing Library for component and hook tests
-- Use MSW to mock API calls in tests — never hit the real backend in unit tests
-- Co-locate test files next to the component/hook they test (Component.test.tsx)
-- Test custom hooks (useExpenses, useBoards) and form validation logic thoroughly
-- Don't write tests for shadcn/ui primitives themselves, only your usage of them
-- Run `npm run test` after adding/changing tests to confirm they pass
+- xUnit in a separate /Tests project (ExpenseTracker.Api.Tests), referencing the main API project
+- Use Moq for mocking dependencies, FluentAssertions for assertions
+- Use EF Core InMemory provider for tests touching the DbContext
+- Test the Services layer thoroughly; controllers only need integration tests for critical
+  paths (auth, expense creation) using WebApplicationFactory
+- Every new service method should have a corresponding test before the task is considered done
+- Run `dotnet test` after adding/changing tests to confirm they pass

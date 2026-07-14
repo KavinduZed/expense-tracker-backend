@@ -45,6 +45,8 @@ builder.Services.AddAuthorization(o =>
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<IBoardAccessGuard, BoardAccessGuard>();
+builder.Services.AddScoped<IBoardService, BoardService>();
 
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation();

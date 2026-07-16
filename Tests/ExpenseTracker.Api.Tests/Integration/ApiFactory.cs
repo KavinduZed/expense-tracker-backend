@@ -17,6 +17,10 @@ public class ApiFactory : WebApplicationFactory<Program>
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["Jwt:Key"] = "integration-test-signing-key-32-chars-min!!",
+                // Explicitly blank out any relational connection string (e.g. from local
+                // user-secrets) so the SqlServer health check isn't registered against a
+                // real, unreachable database during tests. Tests use EF InMemory below.
+                ["ConnectionStrings:Default"] = "",
             }));
 
         builder.ConfigureServices(services =>
